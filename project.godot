@@ -24,22 +24,8 @@ TransitionScreen="*res://Scenes/TransitionScreen.tscn"
 
 [dialogic]
 
-directories/dch_directory={
-"Max": "res://Dialogic/Character/Max.dch",
-"evil_max_hidden": "res://Dialogic/Timeline/evil_max_hidden.dch"
-}
-directories/dtl_directory={
-"Wave_1": "res://Dialogic/Timeline/Wave_1.dtl",
-"Wave_2": "res://Dialogic/Timeline/Wave_2.dtl",
-"Wave_3": "res://Dialogic/Timeline/Wave_3.dtl",
-"Wave_4": "res://Dialogic/Timeline/Wave_4.dtl",
-"Wave_5": "res://Dialogic/Timeline/Wave_5.dtl",
-"Wave_ended": "res://Dialogic/Timeline/Wave_ended.dtl",
-"boss_wave": "res://Dialogic/Timeline/boss_wave.dtl",
-"lvl2": "res://Dialogic/Timeline/lvl2.dtl",
-"lvl3": "res://Dialogic/Timeline/lvl3.dtl",
-"lvl9": "res://Dialogic/Timeline/lvl9.dtl"
-}
+directories/dch_directory={}
+directories/dtl_directory={}
 layout/style_directory={}
 extensions_folder="res://addons/dialogic_additions"
 text/letter_speed=0.01
