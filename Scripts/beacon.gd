@@ -109,6 +109,8 @@ func start_dialogue_for_level():
 	match Global.current_level:
 		2:
 			run_dialogue("lvl2")
+		3:
+			run_dialogue("lvl3")
 		10:
 			# run_dialogue("lvl10")
 			pass

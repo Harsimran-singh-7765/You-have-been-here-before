@@ -36,7 +36,8 @@ directories/dtl_directory={
 "Wave_5": "res://Dialogic/Timeline/Wave_5.dtl",
 "Wave_ended": "res://Dialogic/Timeline/Wave_ended.dtl",
 "boss_wave": "res://Dialogic/Timeline/boss_wave.dtl",
-"lvl2": "res://Dialogic/Timeline/lvl2.dtl"
+"lvl2": "res://Dialogic/Timeline/lvl2.dtl",
+"lvl3": "res://Dialogic/Timeline/lvl3.dtl"
 }
 layout/style_directory={}
 extensions_folder="res://addons/dialogic_additions"
@@ -73,6 +74,9 @@ audio/channel_defaults={
 }
 }
 text/input_action="dialogic_default_action"
+glossary/default_case_sensitive=true
+layout/style_list=[]
+layout/default_style="Default"
 
 [editor_plugins]
 

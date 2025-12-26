@@ -20,7 +20,7 @@ var completed_levels := {}      # Example: { "lvl2": true }
 # --- SCENE CONFIGURATION ---
 # Key = Current Level ID, Value = Next Scene Path
 var next_level_scenes = {
-	"lvl2": "res://Scenes/lvl_5.tscn",
+	"lvl2": "res://Scenes/lvl_3.tscn",
 	"lvl3": "res://Scenes/lvl_4.tscn",
 	# ... aage ke levels yahan add karna ...
 	

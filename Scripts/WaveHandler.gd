@@ -21,6 +21,11 @@ var level_waves := {
 		"enemy_scene": preload("res://Scenes/enemies/henchmen.tscn"),
 		"boss_scene": preload("res://Scenes/enemies/demon_slime.tscn"), # BOSS SCENE YAHAN DALNA
 		"waves": [3, 5,7] # Example: 2 waves of enemies, then BOSS
+	},
+	"lvl3": {
+		"enemy_scene": preload("res://Scenes/enemies/henchmen.tscn"),
+		"boss_scene": preload("res://Scenes/enemies/Minotaur.tscn"), # BOSS SCENE YAHAN DALNA
+		"waves": [ 5,7,10] # Example: 2 waves of enemies, then BOSS
 	}
 }
 
