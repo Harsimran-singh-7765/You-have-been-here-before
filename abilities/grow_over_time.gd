@@ -9,7 +9,7 @@ signal growing_changed(status: bool)
 var time_lapsed = 0.0
 
 # 1. Variables banao (Default values ke sath)
-var damage_amount : int = 100
+var damage_amount : int = 30
 var target_scale : float = 1.0 
 
 var growing = false :

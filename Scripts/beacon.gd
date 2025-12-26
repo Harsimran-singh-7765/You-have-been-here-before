@@ -111,6 +111,8 @@ func start_dialogue_for_level():
 			run_dialogue("lvl2")
 		3:
 			run_dialogue("lvl3")
+		9:
+			run_dialogue("lvl9")
 		10:
 			# run_dialogue("lvl10")
 			pass
