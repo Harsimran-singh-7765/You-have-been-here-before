@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://bjgxmviup1qw5" path="res://Scenes/Beacon.tscn" id="4_kn8q5"]
 [ext_resource type="PackedScene" uid="uid://d3uh5euxh2fmd" path="res://Scenes/player.tscn" id="5_shlpc"]
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_vbeg1"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_dok15"]
 texture = ExtResource("3_pyabj")
 0:0/0 = 0
 3:0/0 = 0
@@ -101,9 +101,9 @@ texture = ExtResource("3_pyabj")
 1:13/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_22vjt"]
-sources/1 = SubResource("TileSetAtlasSource_vbeg1")
+sources/1 = SubResource("TileSetAtlasSource_dok15")
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_8fx8d"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qjj7h"]
 texture = ExtResource("3_pyabj")
 0:0/0 = 0
 0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
@@ -355,7 +355,7 @@ texture = ExtResource("3_pyabj")
 
 [sub_resource type="TileSet" id="TileSet_rrg1h"]
 physics_layer_0/collision_layer = 1
-sources/1 = SubResource("TileSetAtlasSource_8fx8d")
+sources/1 = SubResource("TileSetAtlasSource_qjj7h")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jlg5g"]
 size = Vector2(149.5, 44)

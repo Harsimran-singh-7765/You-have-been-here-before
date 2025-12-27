@@ -38,6 +38,15 @@ shader_parameter/active_color = Color(0.74509805, 0.64705884, 0.5411765, 1)
 shader_parameter/cooldown_color = Color(0, 0, 0, 1)
 shader_parameter/border = 0.05
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rrs6w"]
+resource_local_to_scene = true
+shader = ExtResource("2_xyhva")
+shader_parameter/custom_texture = ExtResource("5_t0cwy")
+shader_parameter/cooldown_progress = 100
+shader_parameter/active_color = Color(0.6745098, 0.93333334, 0.9843137, 1)
+shader_parameter/cooldown_color = Color(0, 0, 0, 1)
+shader_parameter/border = 0.05
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_kfqgx"]
 resource_local_to_scene = true
 shader = ExtResource("2_xyhva")
@@ -53,15 +62,6 @@ shader = ExtResource("2_xyhva")
 shader_parameter/custom_texture = ExtResource("7_4pk8x")
 shader_parameter/cooldown_progress = 100
 shader_parameter/active_color = Color(0.61968654, 0.53419626, 0.9396769, 1)
-shader_parameter/cooldown_color = Color(0, 0, 0, 1)
-shader_parameter/border = 0.05
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_rrs6w"]
-resource_local_to_scene = true
-shader = ExtResource("2_xyhva")
-shader_parameter/custom_texture = ExtResource("5_t0cwy")
-shader_parameter/cooldown_progress = 100
-shader_parameter/active_color = Color(0.6745098, 0.93333334, 0.9843137, 1)
 shader_parameter/cooldown_color = Color(0, 0, 0, 1)
 shader_parameter/border = 0.05
 
@@ -167,6 +167,28 @@ theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_hover_color = Color(0.29803923, 0.29803923, 0.29803923, 0.8392157)
 flat = true
 
+[node name="AbilitySlot_water_ball" type="MarginContainer" parent="MarginContainer/GridContainer"]
+layout_mode = 2
+script = ExtResource("3_uynjj")
+
+[node name="IconRect" type="ColorRect" parent="MarginContainer/GridContainer/AbilitySlot_water_ball"]
+material = SubResource("ShaderMaterial_rrs6w")
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+
+[node name="ManaLabel" type="Label" parent="MarginContainer/GridContainer/AbilitySlot_water_ball"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_72ny4")
+text = "OUT 
+OF 
+MANA"
+horizontal_alignment = 1
+
+[node name="Button" type="Button" parent="MarginContainer/GridContainer/AbilitySlot_water_ball"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+flat = true
+
 [node name="AbilitySlot_wind_tornado" type="MarginContainer" parent="MarginContainer/GridContainer"]
 layout_mode = 2
 script = ExtResource("3_uynjj")
@@ -209,26 +231,4 @@ horizontal_alignment = 1
 
 [node name="Button" type="Button" parent="MarginContainer/GridContainer/AbilitySlot_Shadow_summon"]
 layout_mode = 2
-flat = true
-
-[node name="AbilitySlot_water_ball2" type="MarginContainer" parent="MarginContainer/GridContainer"]
-layout_mode = 2
-script = ExtResource("3_uynjj")
-
-[node name="IconRect" type="ColorRect" parent="MarginContainer/GridContainer/AbilitySlot_water_ball2"]
-material = SubResource("ShaderMaterial_rrs6w")
-custom_minimum_size = Vector2(100, 100)
-layout_mode = 2
-
-[node name="ManaLabel" type="Label" parent="MarginContainer/GridContainer/AbilitySlot_water_ball2"]
-layout_mode = 2
-theme_override_fonts/font = ExtResource("5_72ny4")
-text = "OUT 
-OF 
-MANA"
-horizontal_alignment = 1
-
-[node name="Button" type="Button" parent="MarginContainer/GridContainer/AbilitySlot_water_ball2"]
-layout_mode = 2
-mouse_default_cursor_shape = 2
 flat = true
