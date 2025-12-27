@@ -21,9 +21,9 @@ var completed_levels := {}      # Example: { "lvl2": true }
 # Key = Current Level ID, Value = Next Scene Path
 var next_level_scenes = {
 	"lvl2": "res://Scenes/lvl_3.tscn",
-	"lvl3": "res://Scenes/lvl_4.tscn",
-	"lvl7": "res://Scenes/lvl_8.tscn",
-	
+	"lvl3": "res://Scenes/lvl_7.tscn",
+	"lvl7": "res://Scenes/lvl_9.tscn",
+	"lvl9": "res://Scenes/lvl_10.tscn",
 	# ... aage ke levels yahan add karna ...
 	
 	# Loop Logic ke liye placeholder path (baad mein condition lagenge)

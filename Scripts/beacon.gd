@@ -89,7 +89,7 @@ func activate_beacon():
 	print("[BEACON]", beacon_id, "activated | access =", access_count)
 
 	# FIRST ACCESS → QUEST / FIGHT
-	if access_count == 1:
+	if access_count % 2 ==  1:
 		print("[BEACON] First access → dialogue")
 		start_dialogue_for_level()
 		return
