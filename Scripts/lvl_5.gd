@@ -4,8 +4,8 @@ extends Node2D
 # 47 -1 1025 491
 
 func _ready() -> void:
-	Global.current_level_id = "lvl2"
-	Global.current_level = 2
+	Global.current_level_id = "lvl5"
+	Global.current_level = 5
 	WaveHandler.all_waves_completed.connect(_on_waves_done)
 	Global.respawn_position = Vector2(446, 330)
 
@@ -25,7 +25,7 @@ func _on_void_body_entered(body: Node2D) -> void:
 			body.take_damage(body.MAX_HEALTH)
 
 func _on_waves_done(level_id):
-	if level_id == "lvl2":
-		print("[LEVEL 2] Combat complete")
+	if level_id == "lvl5":
+		print("[LEVEL 5] Combat complete")
 		# unlock exit
 		# continue story

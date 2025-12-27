@@ -71,8 +71,12 @@ var direction
 
 
 const MAGIC_MANA_COST := {
-	"fire_ball": 20,
-	"fire_spin": 50
+	"fire_spin": 12,
+	"fire_ball": 5,
+	"water_ball": 8,
+	"rock_throw": 10,
+	"wind_tornado": 15,
+	"shadow_summon": 50
 }
 
 # -----------------------

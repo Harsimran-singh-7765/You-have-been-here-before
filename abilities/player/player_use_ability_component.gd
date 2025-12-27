@@ -21,7 +21,7 @@ extends Node
 @export var rock_throw_cooldown := 0.8
 @export var water_ball_cooldown := 1.0
 @export var wind_tornado_cooldown := 1.5
-@export var shadow_summon_cooldown := 0
+@export var shadow_summon_cooldown := 50
 # --- MANA COSTS ---
 @export_group("Mana Costs")
 @export var fire_spin_cost := 12
@@ -29,7 +29,7 @@ extends Node
 @export var water_ball_cost := 8
 @export var rock_throw_cost := 10
 @export var wind_tornado_cost := 15
-@export var shadow_summon_cost := 15
+@export var shadow_summon_cost := 50
 # --- NEW: UNLOCK LEVEL REQS ---
 # Yahan set kar diya hai jo tumne manga
 @export_group("Unlock Requirements")
@@ -38,7 +38,7 @@ extends Node
 @export var req_lvl_rock_throw := 3
 @export var req_lvl_water_ball := 5
 @export var req_lvl_wind_tornado := 7
-@export var req_lvl_shadow_summon := 0
+@export var req_lvl_shadow_summon := 9
 
 # --- SIGNALS ---
 signal magic_used(attack_name: String)

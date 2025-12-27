@@ -9,7 +9,7 @@ extends Control
 @export var level_req_water_ball := 3
 @export var level_req_rock_throw := 5
 @export var level_req_wind_tornado := 7
-@export var level_req_shadow_summon := 0
+@export var level_req_shadow_summon := 9
 
 var slots: Dictionary = {}
 var active_component: PlayerUseAbilityComponent = null

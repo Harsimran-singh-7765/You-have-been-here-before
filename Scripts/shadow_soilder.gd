@@ -10,9 +10,10 @@ const JUMP_VELOCITY := -320.0
 const JUMP_COOLDOWN_TIME := 0.6
 
 const ATTACK_RANGE := 40.0
-const ATTACK_DAMAGE := 20
-const ATTACK_COOLDOWN := 1.0
-const DEATH_ANIMATION_TIME := 1.0
+const ATTACK_DAMAGE := 10        # Tick damage
+const ATTACK_TICK_RATE := 1.0    # Har 1 sec mein damage
+const ATTACK_COOLDOWN := 1.0     # Recovery time
+const ATTACK_HITBOX_FRAME := 0.3 # Hitbox activation delay
 
 const MAX_HEALTH := 50
 
@@ -24,12 +25,17 @@ signal died
 # -----------------------
 enum State { IDLE, FOLLOW, CHASE, ATTACK, ATTACK_RECOVERY, DEAD }
 var state: State = State.IDLE
+var previous_state: State = State.IDLE
 
 var player: CharacterBody2D = null
 var target_enemy: CharacterBody2D = null
 var health: int = MAX_HEALTH
 
 var jump_cooldown: bool = false
+
+# --- COMBAT VARS (Henchman Style) ---
+var attack_can_hit: bool = false
+var damage_tick_timer: float = 0.0 
 var recovery_timer: float = 0.0
 
 # Track all detected enemies for priority system
@@ -60,8 +66,7 @@ func _ready():
 func shadow():
 	pass
 
-func enemy():
-	pass
+
 
 # -----------------------
 func _find_initial_player():
@@ -89,6 +94,11 @@ func _physics_process(delta: float) -> void:
 	# PRIORITY CHECK: Har frame check karo agar naya enemy hai
 	_update_target_priority()
 	
+	# Store previous state for debugging
+	if state != previous_state:
+		previous_state = state
+		if DEBUG_AI: print("[SHADOW] State changed to: ", State.keys()[state])
+	
 	match state:
 		State.IDLE: 
 			_idle_state()
@@ -97,7 +107,7 @@ func _physics_process(delta: float) -> void:
 		State.CHASE: 
 			_chase_state()
 		State.ATTACK: 
-			_attack_state()
+			_attack_state(delta)
 		State.ATTACK_RECOVERY: 
 			_attack_recovery_state(delta)
 	
@@ -112,36 +122,42 @@ func _update_target_priority():
 	
 	# Agar current target invalid hai, reset karo
 	if target_enemy != null and not is_instance_valid(target_enemy):
-		target_enemy = null
 		if DEBUG_AI: print("[SHADOW] Current target died/invalid")
-	
-	# PRIORITY LOGIC:
-	# 1. Agar koi enemy hai list mein aur abhi koi target nahi
-	# 2. Ya agar attack/chase state nahi hai aur enemy mil gaya
-	if detected_enemies.size() > 0:
-		# Closest enemy dhundo
-		var closest_enemy = _get_closest_enemy()
+		target_enemy = null
+		attack_can_hit = false
 		
-		# Agar naya closest enemy hai aur hum attack mein busy nahi
-		if closest_enemy != null:
-			if target_enemy == null:
-				# Pehli baar enemy mila
-				target_enemy = closest_enemy
-				if state == State.FOLLOW or state == State.IDLE:
-					state = State.CHASE
-					if DEBUG_AI: print("[SHADOW] New enemy priority: ", closest_enemy.name)
-			elif state == State.FOLLOW or state == State.IDLE:
-				# Follow/Idle mein ho aur naya enemy detect hua
-				target_enemy = closest_enemy
+		# Immediately switch state if in attack-related states
+		if state == State.ATTACK or state == State.ATTACK_RECOVERY:
+			if detected_enemies.size() > 0:
 				state = State.CHASE
-				if DEBUG_AI: print("[SHADOW] Switching to new enemy: ", closest_enemy.name)
-	else:
-		# Koi enemy nahi, player ko follow karo
-		if target_enemy != null and state != State.ATTACK and state != State.ATTACK_RECOVERY:
-			target_enemy = null
-			if player != null:
+			elif player:
 				state = State.FOLLOW
-				if DEBUG_AI: print("[SHADOW] No enemies, back to follow")
+			else:
+				state = State.IDLE
+	
+	# Only switch targets if not in attack or recovery
+	if state != State.ATTACK and state != State.ATTACK_RECOVERY:
+		if detected_enemies.size() > 0:
+			var closest_enemy = _get_closest_enemy()
+			
+			if closest_enemy != null:
+				if target_enemy == null:
+					target_enemy = closest_enemy
+					if state == State.FOLLOW or state == State.IDLE:
+						state = State.CHASE
+						if DEBUG_AI: print("[SHADOW] New enemy priority: ", closest_enemy.name)
+				elif state == State.FOLLOW or state == State.IDLE:
+					target_enemy = closest_enemy
+					state = State.CHASE
+					if DEBUG_AI: print("[SHADOW] Switching to new enemy: ", closest_enemy.name)
+		else:
+			# No enemies detected
+			if target_enemy != null:
+				target_enemy = null
+				if player != null:
+					state = State.FOLLOW
+				else:
+					state = State.IDLE
 
 func _get_closest_enemy():
 	if detected_enemies.size() == 0:
@@ -164,7 +180,8 @@ func _get_closest_enemy():
 # -----------------------
 func _idle_state():
 	velocity.x = 0
-	sprite.play("idle")
+	if sprite.animation != "idle":
+		sprite.play("idle")
 	
 	# Priority: Enemy > Player
 	if detected_enemies.size() > 0:
@@ -173,8 +190,6 @@ func _idle_state():
 		state = State.FOLLOW
 
 func _follow_state():
-	# Priority check already handled in _update_target_priority()
-	
 	if player == null or not is_instance_valid(player):
 		state = State.IDLE
 		return
@@ -188,11 +203,13 @@ func _follow_state():
 	# Player ke paas (50px) toh ruk jao
 	if dist_x < 50:
 		velocity.x = 0
-		sprite.play("idle")
+		if sprite.animation != "idle":
+			sprite.play("idle")
 		return
 	
 	velocity.x = dir * SPEED
-	if sprite.animation != "run": sprite.play("run")
+	if sprite.animation != "run": 
+		sprite.play("run")
 	
 	# Jump Logic
 	ground_check.target_position = Vector2(20.0 * dir, 30.0)
@@ -203,11 +220,20 @@ func _follow_state():
 			_do_jump(dir)
 
 func _chase_state():
+	# CRITICAL CHECK: Target died/invalid during chase
 	if target_enemy == null or not is_instance_valid(target_enemy):
+		if DEBUG_AI: print("[SHADOW] Target lost during chase, switching state")
 		target_enemy = null
-		if player:
+		
+		# Immediately decide next action
+		if detected_enemies.size() > 0:
+			# Aur enemies hain, closest ko target karo
+			state = State.CHASE  # Priority system next enemy choose karega
+		elif player:
+			# Koi enemy nahi, player ko follow karo
 			state = State.FOLLOW
 		else:
+			# Kuch nahi mila, idle ho jao
 			state = State.IDLE
 		return
 	
@@ -217,13 +243,14 @@ func _chase_state():
 	
 	sprite.flip_h = dir < 0
 	
-	# Attack range mein aa gaya
+	# ATTACK TRIGGER - Range mein aate hi attack shuru
 	if dist_x <= ATTACK_RANGE:
 		_start_attack()
 		return
 	
 	velocity.x = dir * SPEED
-	if sprite.animation != "run": sprite.play("run")
+	if sprite.animation != "run": 
+		sprite.play("run")
 	
 	# Jump Logic
 	ground_check.target_position = Vector2(20.0 * dir, 30.0)
@@ -234,34 +261,76 @@ func _chase_state():
 			_do_jump(dir)
 
 # -----------------------
-# ATTACK LOGIC
+# COMBAT LOGIC (Henchman Style - Continuous Tick)
 # -----------------------
 func _start_attack():
 	state = State.ATTACK
 	velocity.x = 0
 	sprite.play("attack")
-	attack_area.monitoring = true
 	
 	if DEBUG_AI: print("[SHADOW] Attack Start on: ", target_enemy.name if target_enemy else "null")
 	
+	# Delay ke baad Hitbox ON karo
+	get_tree().create_timer(ATTACK_HITBOX_FRAME).timeout.connect(func():
+		if state == State.ATTACK:
+			attack_can_hit = true
+			attack_area.monitoring = true
+			damage_tick_timer = 0.0 # Turant damage dene ke liye ready
+			if DEBUG_AI: print("[SHADOW] Hitbox Active")
+	)
+	
+	# Animation khatam hone ka wait karo
 	await sprite.animation_finished
 	
+	# Agar abhi bhi attack state mein hai
 	if state == State.ATTACK:
 		_end_attack()
 
-func _attack_state():
-	velocity.x = 0
+func _attack_state(delta: float):
+	velocity.x = 0 # Attack karte waqt move nahi karega
 	
-	if sprite.is_playing() and attack_area.monitoring:
-		var bodies = attack_area.get_overlapping_bodies()
-		for body in bodies:
-			if body == target_enemy and body.has_method("take_damage"):
-				if DEBUG_AI: print("[SHADOW] Dealt ", ATTACK_DAMAGE, " damage to ", body.name)
-				body.take_damage(ATTACK_DAMAGE)
-				attack_area.monitoring = false
-				break
+	# CRITICAL CHECK: Target died/invalid during attack
+	if target_enemy == null or not is_instance_valid(target_enemy):
+		if DEBUG_AI: print("[SHADOW] Target died during attack, switching state")
+		attack_can_hit = false
+		attack_area.monitoring = false
+		
+		# Immediately decide next action
+		if detected_enemies.size() > 0:
+			# Aur enemies hain, chase karo
+			state = State.CHASE
+		elif player:
+			# Koi enemy nahi, player ko follow karo
+			state = State.FOLLOW
+		else:
+			# Kuch nahi mila, idle ho jao
+			state = State.IDLE
+		return
+	
+	# Logic: Agar hitbox active hai, toh tick rate ke hisaab se damage do
+	if attack_can_hit:
+		damage_tick_timer -= delta
+		
+		if damage_tick_timer <= 0:
+			# Check karo kon area mein hai
+			var bodies = attack_area.get_overlapping_bodies()
+			for body in bodies:
+				if body == target_enemy and body.has_method("take_damage"):
+					if DEBUG_AI: print("[SHADOW] Dealt ", ATTACK_DAMAGE, " damage to ", body.name)
+					body.take_damage(ATTACK_DAMAGE)
+					damage_tick_timer = ATTACK_TICK_RATE # Timer reset
+					break 
+	
+	# CANCEL: Agar enemy bohot door chala gaya (Henchman logic)
+	if target_enemy and is_instance_valid(target_enemy):
+		var dist = abs(target_enemy.global_position.x - global_position.x)
+		if dist > ATTACK_RANGE * 1.5:
+			if DEBUG_AI: print("[SHADOW] Enemy too far, canceling attack")
+			_end_attack()
+			state = State.CHASE
 
 func _end_attack():
+	attack_can_hit = false
 	attack_area.monitoring = false
 	recovery_timer = ATTACK_COOLDOWN
 	state = State.ATTACK_RECOVERY
@@ -269,21 +338,39 @@ func _end_attack():
 
 func _attack_recovery_state(delta: float):
 	velocity.x = 0
-	sprite.play("idle")
+	if sprite.animation != "idle":
+		sprite.play("idle")
+	
+	# CRITICAL CHECK: Target died/invalid during recovery
+	if target_enemy != null and not is_instance_valid(target_enemy):
+		if DEBUG_AI: print("[SHADOW] Target died during recovery, switching state")
+		target_enemy = null
+		
+		# Immediately decide next action
+		if detected_enemies.size() > 0:
+			# Aur enemies hain, chase karo
+			state = State.CHASE
+		elif player:
+			# Koi enemy nahi, player ko follow karo
+			state = State.FOLLOW
+		else:
+			# Kuch nahi mila, idle ho jao
+			state = State.IDLE
+		return
 	
 	recovery_timer -= delta
 	
 	if recovery_timer <= 0:
-		# Recovery khatam, priority check karo
+		# Recovery khatam, priority check karo (Henchman style)
 		if target_enemy != null and is_instance_valid(target_enemy):
 			var dist = abs(target_enemy.global_position.x - global_position.x)
 			if dist <= ATTACK_RANGE:
-				_start_attack()  # Same enemy pe dobara attack
+				_start_attack()  # Turant attack agar paas hai
 			else:
 				state = State.CHASE
 		elif detected_enemies.size() > 0:
 			# Current target khatam but list mein aur enemies hain
-			state = State.CHASE  # Priority system next enemy choose karega
+			state = State.CHASE
 		elif player:
 			state = State.FOLLOW
 		else:
@@ -332,10 +419,10 @@ func _on_detection_body_exited(body: Node2D) -> void:
 			detected_enemies.erase(body)
 			if DEBUG_AI: print("[SHADOW] Enemy left: ", body.name, " | Remaining: ", detected_enemies.size())
 		
-		# Agar yeh current target tha
-		if body == target_enemy:
+		# Agar yeh current target tha aur attack/recovery nahi chal raha
+		if body == target_enemy and state != State.ATTACK and state != State.ATTACK_RECOVERY:
 			target_enemy = null
-			# Priority system next frame decide karega kya karna hai
+			# Priority system next frame decide karega
 	
 	# Player left (rare)
 	if body == player:
@@ -360,6 +447,7 @@ func take_damage(amount: int):
 
 func die():
 	state = State.DEAD
+	attack_can_hit = false
 	velocity = Vector2.ZERO
 	health_bar.visible = false
 	
@@ -372,8 +460,9 @@ func die():
 	
 	if sprite.sprite_frames.has_animation("death"):
 		sprite.play("death")
-		await get_tree().create_timer(DEATH_ANIMATION_TIME).timeout
+		await sprite.animation_finished
+		queue_free()
 	else:
-		await get_tree().create_timer(DEATH_ANIMATION_TIME).timeout
+		await get_tree().create_timer(1.0).timeout
 	
-	queue_free()
+		queue_free()

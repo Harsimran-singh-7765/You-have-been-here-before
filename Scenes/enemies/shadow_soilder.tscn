@@ -336,7 +336,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_iccjc")
 }],
-"loop": true,
+"loop": false,
 "name": &"death",
 "speed": 10.0
 }, {
@@ -440,7 +440,6 @@ corner_radius_bottom_left = 20
 
 [node name="shadow_soilder" type="CharacterBody2D"]
 collision_layer = 4
-collision_mask = 5
 script = ExtResource("1_kyo86")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
@@ -448,7 +447,8 @@ position = Vector2(0, -13)
 sprite_frames = SubResource("SpriteFrames_vgqql")
 animation = &"death"
 autoplay = "idle"
-frame_progress = 0.16695453
+frame = 22
+frame_progress = 1.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(1, -3)
