@@ -1,4 +1,4 @@
-[gd_scene load_steps=157 format=3 uid="uid://d3uh5euxh2fmd"]
+[gd_scene load_steps=163 format=3 uid="uid://d3uh5euxh2fmd"]
 
 [ext_resource type="Script" uid="uid://cbvy5se8xb8sv" path="res://Scripts/player.gd" id="1_fd4e3"]
 [ext_resource type="Texture2D" uid="uid://br2e42wigllxm" path="res://We_HAVE_BEEN_HERE_BEFORE_ASSETS/SLOT_!_TRYANA_SHIT/SHADOW Series - The Free Assets/SHADOW Series - The Blind Huntress/Sprite Sheet/1 - Idle.png" id="1_ow1uv"]
@@ -26,6 +26,9 @@
 [ext_resource type="Script" uid="uid://covt74nalhceh" path="res://abilities/Projectile_launch_ability.gd" id="20_olqyp"]
 [ext_resource type="PackedScene" uid="uid://bcc6110lle5k0" path="res://abilities/player/Fire_ball.tscn" id="21_olqyp"]
 [ext_resource type="PackedScene" uid="uid://un3mvdf88msv" path="res://Scenes/ability_ui.tscn" id="26_0gysh"]
+[ext_resource type="PackedScene" uid="uid://b37qti58l6no1" path="res://abilities/player/Water_ball.tscn" id="26_83xs0"]
+[ext_resource type="PackedScene" uid="uid://crggh3deaddmx" path="res://abilities/player/Rock_throw.tscn" id="27_ypfnu"]
+[ext_resource type="PackedScene" uid="uid://dttt0faw6ytar" path="res://abilities/player/Wind_Tornado.tscn" id="28_xuaoq"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jp6nb"]
 atlas = ExtResource("1_ow1uv")
@@ -994,6 +997,24 @@ projectile_scene = ExtResource("21_olqyp")
 instancing_offset = Vector2(30, -10)
 metadata/_custom_type_script = "uid://covt74nalhceh"
 
+[sub_resource type="Resource" id="Resource_wohnl"]
+script = ExtResource("20_olqyp")
+projectile_scene = ExtResource("26_83xs0")
+instancing_offset = Vector2(30, -20)
+metadata/_custom_type_script = "uid://covt74nalhceh"
+
+[sub_resource type="Resource" id="Resource_36dho"]
+script = ExtResource("20_olqyp")
+projectile_scene = ExtResource("27_ypfnu")
+instancing_offset = Vector2(20, -20)
+metadata/_custom_type_script = "uid://covt74nalhceh"
+
+[sub_resource type="Resource" id="Resource_yh6i2"]
+script = ExtResource("20_olqyp")
+projectile_scene = ExtResource("28_xuaoq")
+instancing_offset = Vector2(35, -5)
+metadata/_custom_type_script = "uid://covt74nalhceh"
+
 [node name="player" type="CharacterBody2D"]
 collision_layer = 2
 script = ExtResource("1_fd4e3")
@@ -1093,6 +1114,9 @@ shape = SubResource("CapsuleShape2D_fd4e3")
 script = ExtResource("18_igrcy")
 ability_fire_spin = SubResource("Resource_olqyp")
 ability_fire_ball = SubResource("Resource_wpjfl")
+ability_water_ball = SubResource("Resource_wohnl")
+ability_rock_throw = SubResource("Resource_36dho")
+ability_wind_tornado = SubResource("Resource_yh6i2")
 user = NodePath("..")
 fire_spin_cooldown = 1.2
 fire_ball_cooldown = 0.845
