@@ -163,27 +163,44 @@ func _on_entity_died():
 			# Thoda wait karo agli wave se pehle
 			await get_tree().create_timer(2.0).timeout
 			_start_next_wave()
-
 func _finish_all_waves():
 	print("[WAVE] 🎉 ALL WAVES & BOSS DEFEATED 🎉")
 	
 	active = false
 	boss_active = false
 	
-	# 1. Play End Dialogue
+	# --- 1. UPDATE GLOBAL PROGRESS (UNLOCK MAGIC) ---
+	# Global ko batao ki humne ye level ka boss hara diya hai
+	Global.max_level=Global.current_level
+	
+	# --- 2. PLAY REWARD DIALOGUE ---
+	# "new_magic" dialogue chalega jo player ko batayega ki nayi power mili hai
+	print("[DIALOGUE] Playing Magic Unlock Dialogue")
+	# Agar dialogue wait karna hai to 'await' use kar sakte ho
+	await _play_dialogue("new_magic") 
+	
+	# --- 3. PLAY END LEVEL DIALOGUE ---
+	# Thoda ruk kar level end ka dialogue (optional, agar alag hai to)
+	await get_tree().create_timer(1.0).timeout
 	_play_dialogue("Wave_ended")
 	
-	# 2. Update Global Data
+	# --- 4. MARK COMPLETE & SIGNAL ---
 	Global.completed_levels[current_level] = true
 	emit_signal("all_waves_completed", current_level)
 
 # -----------------------
-# HELPER
+# HELPER (Updated for async/await)
 # -----------------------
 func _play_dialogue(timeline_key: String):
-	# Check kar lo agar Dialogic plugin installed hai
-	if true:
+	if true: # Check if Dialogic exists logic
 		print("[DIALOGUE] Playing:", timeline_key)
 		Dialogic.start(timeline_key)
+		
+		# Wait for dialogue to finish logic (Dialogic specific)
+		# Agar tum chahte ho code ruke jab tak dialogue chal raha hai:
+		# await Dialogic.timeline_ended
+		# Note: Ye tabhi chalega agar Dialogic 2.0+ correctly setup hai.
+		# Agar simple rakhna hai to bas start karo aur return karo:
+		return 
 	else:
 		print("[DIALOGUE] Dialogic not found, skipping:", timeline_key)

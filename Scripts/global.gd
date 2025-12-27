@@ -51,8 +51,7 @@ func proceed_to_next_level():
 			
 		# --- NEW: UPDATE MAX LEVEL ---
 		# Calculates which is bigger: current or old max
-		max_level = max(current_level, max_level)
-		print("[GLOBAL] Progress Saved. Max Level Reached: ", max_level)
+		
 		
 		print("[GLOBAL] Transitioning to:", next_scene_path)
 		TransitionScreen.transition_to(next_scene_path)
@@ -60,6 +59,3 @@ func proceed_to_next_level():
 	else:
 		print("[GLOBAL] ERROR: No next scene defined for", current_level_id)
 		
-		
-func _process(delta: float) -> void:
-	max_level = max(current_level, max_level)
